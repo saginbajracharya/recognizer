@@ -1,9 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:recognizer/src/common/styles.dart';
 import 'package:recognizer/src/modules/recognizer/detector_view.dart';
 import 'package:recognizer/src/modules/recognizer/painters/text_detector_painter.dart';
-import 'package:recognizer/src/widgets/base_layout.dart';
+import 'package:recognizer/src/modules/recognizer/recognizer_controller.dart';
 
 class RecognizerView extends StatefulWidget {
   const RecognizerView({super.key});
@@ -14,6 +16,7 @@ class RecognizerView extends StatefulWidget {
 }
 
 class _RecognizerViewState extends State<RecognizerView> {
+  final recognizerCon      = Get.put(RecognizerController());
   var _script              = TextRecognitionScript.latin;
   var _textRecognizer      = TextRecognizer(script: TextRecognitionScript.latin);
   var _cameraLensDirection = CameraLensDirection.back;
@@ -32,55 +35,59 @@ class _RecognizerViewState extends State<RecognizerView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Scan That Receipt'),
-      ),
-      body: BaseLayout(
-        child: Stack(
-          children: [
-            DetectorView(
-              title: 'Text Detector',
-              customPaint: _customPaint,
-              text: _text,
-              onImage: _processImage,
-              initialCameraLensDirection: _cameraLensDirection,
-              onCameraLensDirectionChanged: (value) => _cameraLensDirection = value,
-            ),
-            Positioned(
-              top: 30,
-              left: 100,
-              right: 100,
-              child: Row(
-                children: [
-                  const Spacer(),
-                  Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: _buildDropdown(),
-                      )),
-                  const Spacer(),
-                ],
-              )
-            ),
-          ],
-        ),
+      body: Stack(
+        children: [
+          // CAMERA VIEW
+          DetectorView(
+            title: 'Text Detector',
+            customPaint: _customPaint,
+            text: _text,
+            onImage: _processImage,
+            initialCameraLensDirection: _cameraLensDirection,
+            onCameraLensDirectionChanged: (value) => _cameraLensDirection = value,
+          ),
+          // Dropdown Scripts
+          Positioned(
+            top  : 30,
+            left : 100,
+            right: 100,
+            child: Row(
+              children: [
+                const Spacer(),
+                Container(
+                  decoration: BoxDecoration(
+                    color: grey800,
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: _buildDropdown(),
+                  )
+                ),
+                const Spacer(),
+              ],
+            )
+          ),
+          Positioned(
+            bottom: kBottomNavigationBarHeight+20,
+            left  : 100,
+            right : 100,
+            child : doneButton(context),
+          )
+        ],
       ),
     );
   }
 
+  // Dropdown Scripts
   Widget _buildDropdown() => DropdownButton<TextRecognitionScript>(
     value: _script,
     icon: const Icon(Icons.arrow_downward),
     elevation: 16,
-    style: const TextStyle(color: Colors.blue),
+    style: const TextStyle(color: blue),
     underline: Container(
       height: 2,
-      color: Colors.blue,
+      color: blue,
     ),
     onChanged: (TextRecognitionScript? script) {
       if (script != null) {
@@ -91,8 +98,7 @@ class _RecognizerViewState extends State<RecognizerView> {
         });
       }
     },
-    items: TextRecognitionScript.values
-        .map<DropdownMenuItem<TextRecognitionScript>>((script) {
+    items: TextRecognitionScript.values.map<DropdownMenuItem<TextRecognitionScript>>((script) {
       return DropdownMenuItem<TextRecognitionScript>(
         value: script,
         child: Text(script.name),
@@ -108,8 +114,7 @@ class _RecognizerViewState extends State<RecognizerView> {
       _text = '';
     });
     final recognizedText = await _textRecognizer.processImage(inputImage);
-    if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null) {
+    if (inputImage.metadata?.size != null && inputImage.metadata?.rotation != null) {
       final painter = TextRecognizerPainter(
         recognizedText,
         inputImage.metadata!.size,
@@ -125,5 +130,21 @@ class _RecognizerViewState extends State<RecognizerView> {
     if (mounted) {
       setState(() {});
     }
+  }
+
+  Widget doneButton(context){
+    dynamic textStyles = TextStyles(context);
+    return ElevatedButton(
+      onPressed: () async{
+        if (_text != null && _text!.isNotEmpty) {
+          setState(() {
+            recognizerCon.recognizedTextList.add(_text!);
+            _text = ''; // Clear the current recognized text from the screen.
+          });
+          Navigator.of(context).pushNamed('/scan_detail');
+        }
+      },
+      child: Text('Save',style: textStyles.button),
+    );
   }
 }

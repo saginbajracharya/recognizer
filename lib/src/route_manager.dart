@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:recognizer/src/modules/details/scan_detail.dart';
 import 'package:recognizer/src/modules/recognizer/recognizer_view.dart';
 import 'package:recognizer/src/modules/sample_feature/sample_item_details_view.dart';
 import 'package:recognizer/src/modules/sample_feature/sample_item_list_view.dart';
@@ -20,6 +21,8 @@ class RouteManager extends StatelessWidget {
         return const SampleItemDetailsView();
       case SampleItemListView.routeName:
         return const SampleItemDetailsView();
+      case ScanDetail.routeName:
+        return const ScanDetail();
       case RecognizerView.routeName:
       default:
         return const RecognizerView();
