@@ -72,7 +72,9 @@ class _CameraViewState extends State<CameraView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: _liveFeedBody());
+    return Scaffold(
+      body: _liveFeedBody()
+    );
   }
 
   Widget _liveFeedBody() {
@@ -112,7 +114,7 @@ class _CameraViewState extends State<CameraView> {
       child: FloatingActionButton(
         heroTag: Object(),
         onPressed: widget.onDetectorViewModeChanged,
-        backgroundColor: Colors.black54,
+        backgroundColor: grey800,
         child: const Icon(
           Icons.photo_library_outlined,
           size: 25,
@@ -130,7 +132,7 @@ class _CameraViewState extends State<CameraView> {
       child: FloatingActionButton(
         heroTag: Object(),
         onPressed: _switchLiveCamera,
-        backgroundColor: Colors.black54,
+        backgroundColor: grey800,
         child: Icon(
           Platform.isIOS
           ? Icons.flip_camera_ios_outlined
@@ -197,45 +199,47 @@ class _CameraViewState extends State<CameraView> {
       constraints: const BoxConstraints(
         maxHeight: 250,
       ),
-      child: Column(children: [
-        Container(
-          width: 55,
-          decoration: BoxDecoration(
-            color: Colors.black54,
-            borderRadius: BorderRadius.circular(10.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Center(
-              child: Text(
-                '${_currentExposureOffset.toStringAsFixed(1)}x',
-                style: const TextStyle(color: Colors.white),
+      child: Column(
+        children: [
+          Container(
+            width: 55,
+            decoration: BoxDecoration(
+              color: Colors.black54,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  '${_currentExposureOffset.toStringAsFixed(1)}x',
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ),
           ),
-        ),
-        Expanded(
-          child: RotatedBox(
-            quarterTurns: 3,
-            child: SizedBox(
-              height: 30,
-              child: Slider(
-                value: _currentExposureOffset,
-                min: _minAvailableExposureOffset,
-                max: _maxAvailableExposureOffset,
-                activeColor: Colors.white,
-                inactiveColor: Colors.white30,
-                onChanged: (value) async {
-                  setState(() {
-                    _currentExposureOffset = value;
-                  });
-                  await _controller?.setExposureOffset(value);
-                },
+          Expanded(
+            child: RotatedBox(
+              quarterTurns: 3,
+              child: SizedBox(
+                height: 30,
+                child: Slider(
+                  value: _currentExposureOffset,
+                  min: _minAvailableExposureOffset,
+                  max: _maxAvailableExposureOffset,
+                  activeColor: Colors.white,
+                  inactiveColor: Colors.white30,
+                  onChanged: (value) async {
+                    setState(() {
+                      _currentExposureOffset = value;
+                    });
+                    await _controller?.setExposureOffset(value);
+                  },
+                ),
               ),
             ),
-          ),
-        )
-      ]),
+          )
+        ]
+      ),
     ),
   );
 
@@ -345,9 +349,7 @@ class _CameraViewState extends State<CameraView> {
     // only supported formats:
     // * nv21 for Android
     // * bgra8888 for iOS
-    if (format == null ||
-        (Platform.isAndroid && format != InputImageFormat.nv21) ||
-        (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
+    if (format == null || (Platform.isAndroid && format != InputImageFormat.nv21) || (Platform.isIOS && format != InputImageFormat.bgra8888)) return null;
 
     // since format is constraint to nv21 or bgra8888, both only have one plane
     if (image.planes.length != 1) return null;

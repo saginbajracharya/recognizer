@@ -60,14 +60,15 @@ class _RecognizerViewState extends State<RecognizerView> {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: _buildDropdown(),
+                    padding: const EdgeInsets.only(left:10.0,right:10.0),
+                    child: _buildDropdown(context),
                   )
                 ),
                 const Spacer(),
               ],
             )
           ),
+          // Save Button
           Positioned(
             bottom: kBottomNavigationBarHeight+20,
             left  : 100,
@@ -80,31 +81,30 @@ class _RecognizerViewState extends State<RecognizerView> {
   }
 
   // Dropdown Scripts
-  Widget _buildDropdown() => DropdownButton<TextRecognitionScript>(
-    value: _script,
-    icon: const Icon(Icons.arrow_downward),
-    elevation: 16,
-    style: const TextStyle(color: blue),
-    underline: Container(
-      height: 2,
-      color: blue,
-    ),
-    onChanged: (TextRecognitionScript? script) {
-      if (script != null) {
-        setState(() {
-          _script = script;
-          _textRecognizer.close();
-          _textRecognizer = TextRecognizer(script: _script);
-        });
-      }
-    },
-    items: TextRecognitionScript.values.map<DropdownMenuItem<TextRecognitionScript>>((script) {
-      return DropdownMenuItem<TextRecognitionScript>(
-        value: script,
-        child: Text(script.name),
-      );
-    }).toList(),
-  );
+  Widget _buildDropdown(context){ 
+    dynamic textStyles = TextStyles(context);
+    return DropdownButton<TextRecognitionScript>(
+      value: _script,
+      icon: const Icon(Icons.arrow_downward),
+      elevation: 16,
+      style: textStyles.button,
+      onChanged: (TextRecognitionScript? script) {
+        if (script != null) {
+          setState(() {
+            _script = script;
+            _textRecognizer.close();
+            _textRecognizer = TextRecognizer(script: _script);
+          });
+        }
+      },
+      items: TextRecognitionScript.values.map<DropdownMenuItem<TextRecognitionScript>>((script) {
+        return DropdownMenuItem<TextRecognitionScript>(
+          value: script,
+          child: Text(script.name),
+        );
+      }).toList(),
+    );
+  }
 
   Future<void> _processImage(InputImage inputImage) async {
     if (!_canProcess) return;
@@ -136,12 +136,19 @@ class _RecognizerViewState extends State<RecognizerView> {
     dynamic textStyles = TextStyles(context);
     return ElevatedButton(
       onPressed: () async{
-        if (_text != null && _text!.isNotEmpty) {
+        if (_text != '' && _text!.isNotEmpty) {
           setState(() {
             recognizerCon.recognizedTextList.add(_text!);
             _text = ''; // Clear the current recognized text from the screen.
           });
           Navigator.of(context).pushNamed('/scan_detail');
+        }
+        else{
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Nothing to Save',textAlign: TextAlign.center)
+            )
+          );
         }
       },
       child: Text('Save',style: textStyles.button),
