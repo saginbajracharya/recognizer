@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get.dart';
 import 'package:recognizer/src/common/styles.dart';
 import 'package:recognizer/src/route_manager.dart';
 
@@ -24,13 +25,13 @@ class MyApp extends StatelessWidget {
     return AnimatedBuilder(
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
-        return MaterialApp(
+        return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           // Providing a restorationScopeId allows the Navigator built by the
           // MaterialApp to restore the navigation stack when a user leaves and
           // returns to the app after it has been killed while running in the
           // background.
-          restorationScopeId: 'app',
+          // restorationScopeId: 'app', //Not Available in Get X
           // Provide the generated AppLocalizations to the MaterialApp. This
           // allows descendant Widgets to display the correct translations
           // depending on the user's locale.

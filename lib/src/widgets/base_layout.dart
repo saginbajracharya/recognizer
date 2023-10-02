@@ -8,6 +8,7 @@ class BaseLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(10.0),
+      alignment: Alignment.center,
       child: child,
     );
   }
