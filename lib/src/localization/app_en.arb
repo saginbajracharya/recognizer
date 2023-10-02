@@ -1,0 +1,6 @@
+{
+  "appTitle": "recognizer",
+  "@appTitle": {
+    "description": "The title of the application"
+  }
+}
