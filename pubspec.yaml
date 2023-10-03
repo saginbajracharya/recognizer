@@ -17,10 +17,13 @@ dependencies:
   
   # State Management
   get: ^4.6.3
+  # Package Info
+  package_info_plus: ^4.1.0
 
   # Camera
   camera: ^0.10.5+5
   image_picker: ^1.0.4
+  # Path
   path: ^1.8.3
   path_provider: ^2.1.1
 
