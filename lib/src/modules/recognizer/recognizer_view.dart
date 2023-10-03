@@ -8,6 +8,7 @@ import 'package:recognizer/src/modules/recognizer/activity_indicator/activity_in
 import 'package:recognizer/src/modules/recognizer/detector_view.dart';
 import 'package:recognizer/src/modules/recognizer/painters/text_detector_painter.dart';
 import 'package:recognizer/src/modules/recognizer/recognizer_controller.dart';
+import 'package:recognizer/src/modules/settings/settings_view.dart';
 
 class RecognizerView extends StatefulWidget {
   const RecognizerView({super.key});
@@ -71,6 +72,19 @@ class _RecognizerViewState extends State<RecognizerView> {
               ],
             )
           ),
+          // Settings button
+          Positioned(
+            top  : 30,
+            left : 10,
+            child: IconButton(
+              padding: const EdgeInsets.only(left: 10,right: 12.0),
+              constraints: const BoxConstraints(),
+              icon: const Icon(Icons.settings),
+              onPressed: () {
+                Navigator.restorablePushNamed(context, SettingsView.routeName);
+              },
+            ),
+          ),
           // Save Button
           Positioned(
             bottom: kBottomNavigationBarHeight+20,
@@ -86,26 +100,30 @@ class _RecognizerViewState extends State<RecognizerView> {
   // Dropdown Scripts
   Widget _buildDropdown(context){ 
     dynamic textStyles = TextStyles(context);
-    return DropdownButton<TextRecognitionScript>(
-      value: _script,
-      icon: const Icon(Icons.arrow_downward),
-      elevation: 16,
-      style: textStyles.button,
-      onChanged: (TextRecognitionScript? script) {
-        if (script != null) {
-          setState(() {
-            _script = script;
-            _textRecognizer.close();
-            _textRecognizer = TextRecognizer(script: _script);
-          });
-        }
-      },
-      items: TextRecognitionScript.values.map<DropdownMenuItem<TextRecognitionScript>>((script) {
-        return DropdownMenuItem<TextRecognitionScript>(
-          value: script,
-          child: Text(script.name),
-        );
-      }).toList(),
+    return Padding(
+      padding: EdgeInsets.zero,
+      child: DropdownButton<TextRecognitionScript>(
+        value: _script,
+        icon: const Icon(Icons.arrow_downward),
+        elevation: 2,
+        style: textStyles.button,
+        underline: Container(), // Remove the underline
+        onChanged: (TextRecognitionScript? script) {
+          if (script != null) {
+            setState(() {
+              _script = script;
+              _textRecognizer.close();
+              _textRecognizer = TextRecognizer(script: _script);
+            });
+          }
+        },
+        items: TextRecognitionScript.values.map<DropdownMenuItem<TextRecognitionScript>>((script) {
+          return DropdownMenuItem<TextRecognitionScript>(
+            value: script,
+            child: Text(script.name.toUpperCase()),
+          );
+        }).toList(),
+      ),
     );
   }
 

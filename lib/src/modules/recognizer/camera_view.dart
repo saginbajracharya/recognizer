@@ -106,8 +106,8 @@ class _CameraViewState extends State<CameraView> {
   }
 
   Widget _detectionViewModeToggle() => Positioned(
-    bottom: 8,
-    left: 8,
+    bottom: 10,
+    left: 20,
     child: SizedBox(
       height: 50.0,
       width: 50.0,
@@ -124,8 +124,8 @@ class _CameraViewState extends State<CameraView> {
   );
 
   Widget _switchLiveCameraToggle() => Positioned(
-    bottom: 8,
-    right: 8,
+    bottom: 10,
+    right: 20,
     child: SizedBox(
       height: 50.0,
       width: 50.0,
@@ -150,7 +150,7 @@ class _CameraViewState extends State<CameraView> {
     child: Align(
       alignment: Alignment.bottomCenter,
       child: SizedBox(
-        width: 250,
+        width: 200,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -193,7 +193,7 @@ class _CameraViewState extends State<CameraView> {
   );
 
   Widget _exposureControl() => Positioned(
-    top: 40,
+    top: MediaQuery.of(context).size.height/2.5,
     right: 8,
     child: ConstrainedBox(
       constraints: const BoxConstraints(

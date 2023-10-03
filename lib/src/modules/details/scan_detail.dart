@@ -210,6 +210,7 @@ class _ScanDetailState extends State<ScanDetail> {
       return const Divider();
     }
     else{
+      totalItemIndex = -1;
       return const SizedBox();
     }
   }
