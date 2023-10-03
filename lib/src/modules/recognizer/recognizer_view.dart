@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:recognizer/src/common/styles.dart';
+import 'package:recognizer/src/modules/details/scan_detail.dart';
 import 'package:recognizer/src/modules/recognizer/activity_indicator/activity_indicator.dart';
 import 'package:recognizer/src/modules/recognizer/detector_view.dart';
 import 'package:recognizer/src/modules/recognizer/painters/text_detector_painter.dart';
@@ -23,6 +24,7 @@ class _RecognizerViewState extends State<RecognizerView> {
   var _cameraLensDirection = CameraLensDirection.back;
   bool _canProcess         = true;
   bool _isBusy             = false;
+  String? currentScanMethod= '';
   CustomPaint? _customPaint;
   String? _text;
 
@@ -122,9 +124,12 @@ class _RecognizerViewState extends State<RecognizerView> {
         inputImage.metadata!.rotation,
         _cameraLensDirection,
       );
+      currentScanMethod = 'liveScan';
       recognizerCon.recognizedText = recognizedText;
       _customPaint = CustomPaint(painter: painter);
     } else {
+      currentScanMethod = 'imageScan';
+      recognizerCon.recognizedText = recognizedText.text;
       _text = 'Recognized text:\n\n${recognizedText.text}';
       _customPaint = null;
     }
@@ -142,7 +147,7 @@ class _RecognizerViewState extends State<RecognizerView> {
           setState(() {
             recognizerCon.recognizedTextData=recognizerCon.recognizedText;
           });
-          Navigator.of(context).pushNamed('/scan_detail');
+          Navigator.push(context, MaterialPageRoute(builder: (context) => ScanDetail(fromPage: currentScanMethod)));
         }
         else{
           Toast().showSimpleToast(
