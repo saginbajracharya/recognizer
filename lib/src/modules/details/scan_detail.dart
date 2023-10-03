@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:recognizer/src/common/styles.dart';
 import 'package:recognizer/src/modules/recognizer/recognizer_controller.dart';
 import 'package:recognizer/src/widgets/base_layout.dart';
 
@@ -14,6 +15,8 @@ class ScanDetail extends StatefulWidget {
 
 class _ScanDetailState extends State<ScanDetail> {
   final recognizerCon = Get.put(RecognizerController());
+  late int totalItemIndex;
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,9 +101,20 @@ class _ScanDetailState extends State<ScanDetail> {
   }
 
   imageScanResult(){
+    dynamic textStyles = TextStyles(context);
     List<String> textList = recognizerCon.recognizedTextData.split('\n');
     List<String> items = [];
     List<String> prices = [];
+
+    // Create a list to indicate which items are "Total"
+    List<bool> isTotalItem = List.filled(items.length, false);
+
+    // Loop through items to identify "Total" items and set the corresponding flag
+    for (int i = 0; i < items.length; i++) {
+      if (items[i] == 'Total') {
+        isTotalItem[i] = true;
+      }
+    }
 
     // Separate items and prices
     for (int i = 0; i < textList.length; i ++) {
@@ -124,16 +138,10 @@ class _ScanDetailState extends State<ScanDetail> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize      : MainAxisSize.max,
         children: [
-          //Cash Receipt 
-          //Date
-          //Items List
-          //Total
-          //Cash
-          //Change
           textList[0].contains("Cash")
           ?Column(
             children: [
-              SelectableText(textList[0]),
+              SelectableText(textList[0],textAlign: TextAlign.center,style: textStyles.receiptHeading),
               const Divider()
             ],
           )
@@ -148,7 +156,14 @@ class _ScanDetailState extends State<ScanDetail> {
                     shrinkWrap: true,
                     itemCount: items.length,
                     itemBuilder: (context, itemsIndex) {
-                      return SelectableText(items[itemsIndex],textAlign: TextAlign.start);
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          checkAndAddDivider(items,itemsIndex),
+                          SelectableText(items[itemsIndex],style: textStyles.receiptItems),
+                        ],
+                      );
                     },
                   ),
                 ),
@@ -161,7 +176,14 @@ class _ScanDetailState extends State<ScanDetail> {
                     shrinkWrap: true,
                     itemCount: prices.length,
                     itemBuilder: (context, pricesIndex) {
-                      return SelectableText(prices[pricesIndex],textAlign: TextAlign.end);
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          pricesIndex==totalItemIndex?const Divider():const SizedBox(),
+                          SelectableText(prices[pricesIndex],style: textStyles.receiptPrice),
+                        ],
+                      );
                     },
                   ),
                 ),
@@ -179,6 +201,16 @@ class _ScanDetailState extends State<ScanDetail> {
       return true;
     } else {
       return false;
+    }
+  }
+
+  checkAndAddDivider(items,itemsIndex){
+    if (items[itemsIndex] == 'Total'){
+      totalItemIndex = itemsIndex;
+      return const Divider();
+    }
+    else{
+      return const SizedBox();
     }
   }
 }

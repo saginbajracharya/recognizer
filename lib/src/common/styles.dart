@@ -380,6 +380,36 @@ class TextStyles {
     );
   }
 
+  TextStyle get receiptHeading {
+    final brightness = Theme.of(context).brightness;
+    final color = brightness == Brightness.dark ? grey200 : grey800;
+    return TextStyle(
+      fontSize: 20,
+      color: color,
+      fontWeight: FontWeight.bold
+    );
+  }
+  
+  TextStyle get receiptItems {
+    final brightness = Theme.of(context).brightness;
+    final color = brightness == Brightness.dark ? grey200 : grey800;
+    return TextStyle(
+      fontSize: 18,
+      color: color,
+      fontWeight: FontWeight.bold
+    );
+  }
+
+  TextStyle get receiptPrice {
+    final brightness = Theme.of(context).brightness;
+    final color = brightness == Brightness.dark ? grey200 : grey800;
+    return TextStyle(
+      fontSize: 18,
+      color: color,
+      fontWeight: FontWeight.bold
+    );
+  }
+
   TextStyle get emptyText {
     final brightness = Theme.of(context).brightness;
     final color = brightness == Brightness.dark ? grey200 : grey800;
