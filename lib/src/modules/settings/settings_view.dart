@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:recognizer/src/common/styles.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:recognizer/src/widgets/base_layout.dart';
 import 'settings_controller.dart';
 
 /// Displays the various settings that can be customized by the user.
@@ -31,50 +32,54 @@ class SettingsView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal:10.0,vertical: 10.0),
-        // Glue the SettingsController to the theme selection DropdownButton.
-        //
-        // When a user selects a theme from the dropdown list, the
-        // SettingsController is updated, which rebuilds the MaterialApp.
+      body: BaseLayout(
+        customMargin: const EdgeInsets.only(left:20.0,right:20.0,bottom:20.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            DropdownButton<ThemeMode>(
-              // Read the selected themeMode from the controller
-              value: controller.themeMode,
-              // Call the updateThemeMode method any time the user selects a theme.
-              onChanged: controller.updateThemeMode,
-              underline: const SizedBox(),
-              isExpanded: true,
-              isDense: false,
-              items: const [
-                DropdownMenuItem(
-                  value: ThemeMode.system,
-                  child: Text('System Theme'),
-                ),
-                DropdownMenuItem(
-                  value: ThemeMode.light,
-                  child: Text('Light Theme'),
-                ),
-                DropdownMenuItem(
-                  value: ThemeMode.dark,
-                  child: Text('Dark Theme'),
-                )
-              ],
+            Padding(
+              padding: const EdgeInsets.only(bottom:20.0),
+              child: DropdownButton<ThemeMode>(
+                // Read the selected themeMode from the controller
+                value: controller.themeMode,
+                // Call the updateThemeMode method any time the user selects a theme.
+                onChanged: controller.updateThemeMode,
+                underline: const SizedBox(),
+                isExpanded: true,
+                isDense: false,
+                style: textStyles.subheading,
+                items: const [
+                  DropdownMenuItem(
+                    value: ThemeMode.system,
+                    child: Text('System Theme'),
+                  ),
+                  DropdownMenuItem(
+                    value: ThemeMode.light,
+                    child: Text('Light Theme'),
+                  ),
+                  DropdownMenuItem(
+                    value: ThemeMode.dark,
+                    child: Text('Dark Theme'),
+                  )
+                ],
+              ),
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal:10.0,vertical: 20.0),
-              child: FutureBuilder<String>(
-                future: getVersionNumber(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    versionText = snapshot.data!;
-                    return Text('Version : ${snapshot.data}', style: textStyles.subheading);
-                  } else {
-                    return Text('', style: textStyles.subheading);
-                  }
-                },
+            Padding(
+              padding: const EdgeInsets.only(bottom:20.0),
+              child: SizedBox(
+                width: double.infinity,
+                child: FutureBuilder<String>(
+                  future: getVersionNumber(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      versionText = snapshot.data!;
+                      return Text('Version : ${snapshot.data}', style: textStyles.subheading);
+                    } else {
+                      return Text('', style: textStyles.subheading);
+                    }
+                  },
+                ),
               ),
             ),
           ],

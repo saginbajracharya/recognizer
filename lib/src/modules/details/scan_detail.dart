@@ -15,7 +15,7 @@ class ScanDetail extends StatefulWidget {
 
 class _ScanDetailState extends State<ScanDetail> {
   final recognizerCon = Get.put(RecognizerController());
-  late int totalItemIndex;
+  late int totalItemIndex = -1;
   
   @override
   Widget build(BuildContext context) {
@@ -210,7 +210,6 @@ class _ScanDetailState extends State<ScanDetail> {
       return const Divider();
     }
     else{
-      totalItemIndex = -1;
       return const SizedBox();
     }
   }
