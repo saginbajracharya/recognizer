@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:recognizer/src/common/styles.dart';
+import 'package:recognizer/src/modules/recognizer/activity_indicator/activity_indicator.dart';
 import 'package:recognizer/src/modules/recognizer/detector_view.dart';
 import 'package:recognizer/src/modules/recognizer/painters/text_detector_painter.dart';
 import 'package:recognizer/src/modules/recognizer/recognizer_controller.dart';
@@ -121,6 +122,7 @@ class _RecognizerViewState extends State<RecognizerView> {
         inputImage.metadata!.rotation,
         _cameraLensDirection,
       );
+      recognizerCon.recognizedText = recognizedText;
       _customPaint = CustomPaint(painter: painter);
     } else {
       _text = 'Recognized text:\n\n${recognizedText.text}';
@@ -136,18 +138,16 @@ class _RecognizerViewState extends State<RecognizerView> {
     dynamic textStyles = TextStyles(context);
     return ElevatedButton(
       onPressed: () async{
-        if (_text != '' && _text!.isNotEmpty) {
+        if (recognizerCon.recognizedText!='' || recognizerCon.recognizedText!=null) {
           setState(() {
-            recognizerCon.recognizedTextList.add(_text!);
-            _text = ''; // Clear the current recognized text from the screen.
+            recognizerCon.recognizedTextData=recognizerCon.recognizedText;
           });
           Navigator.of(context).pushNamed('/scan_detail');
         }
         else{
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Nothing to Save',textAlign: TextAlign.center)
-            )
+          Toast().showSimpleToast(
+            'Nothing to Save',
+            context
           );
         }
       },

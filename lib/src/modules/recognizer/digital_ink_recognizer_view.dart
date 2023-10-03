@@ -164,9 +164,7 @@ class _DigitalInkViewState extends State<DigitalInkView> {
   Future<void> _isModelDownloaded() async {
     Toast().show(
       'Checking if model is downloaded...',
-      _modelManager
-          .isModelDownloaded(_language)
-          .then((value) => value ? 'downloaded' : 'not downloaded'),
+      _modelManager.isModelDownloaded(_language).then((value) => value ? 'downloaded' : 'not downloaded'),
       context,
       this
     );

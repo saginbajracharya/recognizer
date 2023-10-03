@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 
 class Toast {
-  void show(String message, Future<String> t, BuildContext context,
-      State<StatefulWidget> state) async {
+  void show(String message, Future<String> t, BuildContext context,State<StatefulWidget> state) async {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     showLoadingIndicator(context, message);
     final verificationResult = await t;
@@ -16,19 +15,26 @@ class Toast {
     ));
   }
 
+  void showSimpleToast(String message, BuildContext context) async {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(message),
+    ));
+  }
+
   void showLoadingIndicator(BuildContext context, String text) {
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
         return WillPopScope(
-            onWillPop: () async => false,
-            child: AlertDialog(
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(8.0))),
-              backgroundColor: Colors.black87,
-              content: LoadingIndicator(text: text),
-            ));
+          onWillPop: () async => false,
+          child: AlertDialog(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
+            backgroundColor: Colors.black87,
+            content: LoadingIndicator(text: text),
+          )
+        );
       },
     );
   }

@@ -25,18 +25,40 @@ class _ScanDetailState extends State<ScanDetail> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize      : MainAxisSize.max,
           children: [
+            //Cash Receipt 
             //Date
+            const Divider(),
             //Items List
-            ListView.builder(
-              shrinkWrap : true,
-              itemCount  : recognizerCon.recognizedTextList.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title   : Text(recognizerCon.recognizedTextList[index]),
-                  trailing: Text(recognizerCon.recognizedTextList[index]),
-                );
-              },
-            )
+            Flexible(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: recognizerCon.recognizedTextData.blocks.length,
+                itemBuilder: (context, index) {
+                  final text = recognizerCon.recognizedTextData.blocks[index].text;
+                  // Check the text and conditionally create UI elements
+                  if (index == 0 || index == 1) {
+                    // For index 0 (Cash Receipt), display it in a row with Date (index 1)
+                    if (index == 0) {
+                      return Row(
+                        children: [
+                          Text(text),
+                          const SizedBox(width: 8), // Add spacing between Cash Receipt and Date
+                          Text(recognizerCon.recognizedTextData.blocks[1].text), // Display Date
+                        ],
+                      );
+                    } else {
+                      // For index 1 (Date), return an empty container since it's already displayed with Cash Receipt
+                      return Container();
+                    }
+                  } else {
+                    return ListTile(
+                      title: Text(text),
+                    );
+                  }
+                },
+              ),
+            ),
+            const Divider(),
             //Total
             //Cash
             //Change
